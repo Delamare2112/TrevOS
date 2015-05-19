@@ -14,4 +14,4 @@ Link: `i686-elf-gcc -T linker.ld -o TrevOS.elf -ffreestanding -O2 -nostdlib boot
 
 QEMU: `qemu-system-i386 -kernel TrevOS.elf`
 
-ISO: `cp src/TrevOS.elf grubISO/boot/ && cd grub-mkrescue -o TrevOS.iso grubISO/`
+ISO: `cp TrevOS.elf grubISO/boot/ && grub-mkrescue -o TrevOS.iso grubISO/`
