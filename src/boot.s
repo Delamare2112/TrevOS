@@ -30,7 +30,7 @@ _start:
 	movl $stack_top, %esp
 
 	# Lets take a break from assembly!
-	call kernel_main
+	call StartKernel
 
 	# The kernel returns?  How dare it!  I doom you to Infinite Loop!
 	cli
