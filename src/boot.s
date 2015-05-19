@@ -2,6 +2,7 @@
 .set MEMINFO,	1<<1				# provide memory map
 .set FLAGS,		ALIGN | MEMINFO		# the multiboot flag field
 .set MAGIC,		0x1BADB002			# magic number to find header
+.set CHECKSUM,	-(MAGIC + FLAGS)	# checksum of above, to prove we are multiboot
 
 # a header in the Multiboot Standard.
 # force the header to be in the start of the final program
