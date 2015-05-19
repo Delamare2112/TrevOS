@@ -6,12 +6,12 @@ TrevOS doesn't pretend that it's better than other any other OS.  It proves that
 
 ## Building TrevOS
 
-Assemble: 'i686-elf-as boot.s -o boot.o'
+Assemble: `i686-elf-as boot.s -o boot.o`
 
-Compile: 'i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra'
+Compile: `i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra`
 
-Link: 'i686-elf-gcc -T linker.ld -o TrevOS.elf -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc'
+Link: `i686-elf-gcc -T linker.ld -o TrevOS.elf -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc`
 
-QEMU: 'qemu-system-i386 -kernel TrevOS.elf'
+QEMU: `qemu-system-i386 -kernel TrevOS.elf`
 
-ISO: '$ cp src/TrevOS.elf grubISO/boot/ && cd grub-mkrescue -o TrevOS.iso grubISO/''
+ISO: `cp src/TrevOS.elf grubISO/boot/ && cd grub-mkrescue -o TrevOS.iso grubISO/`
