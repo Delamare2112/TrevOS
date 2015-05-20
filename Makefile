@@ -8,7 +8,7 @@ WHITE := "\033[1;37m"
 
 ETCDIR := etc
 SRCDIR := src
-OBJDIR := src
+OBJDIR := build
 OUTDIR := bin
 
 TARGET := $(OUTDIR)/$(shell basename `pwd`)
@@ -51,11 +51,11 @@ release: directories clean $(OBJS)
 
 $(OBJS): $(SRCS) $(ASMS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cc
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo -e $(NO_COLOUR)Building $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.asm
+$(OBJDIR)/%.o: $(SRCDIR)/%.s
 	@echo -e $(NO_COLOUR)Assembling $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(AS) $(ASFLAGS) -o $@ $<
 
