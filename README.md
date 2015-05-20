@@ -6,15 +6,7 @@ TrevOS doesn't pretend that it's better than other any other OS.  It proves that
 
 ## Building TrevOS
 
-Assemble: `i686-elf-as boot.s -o boot.o`
-
-Compile: `i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra`
-
-Link: `i686-elf-gcc -T linker.ld -o TrevOS.elf -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc`
-
-QEMU: `qemu-system-i386 -kernel TrevOS.elf`
-
-ISO: `cp TrevOS.elf grubISO/boot/ && grub-mkrescue -o TrevOS.iso grubISO/`
+You'll need a compiler that can create i686 elfs!  But once you have that, modify line 16 of the Makefile to point the directory with the compiler, then just type `make` and it should work!  Or at least tell you why it won't work.  You can test the kernel with `make emu` if you have qemu installed!
 
 ## Screenshot
 https://drive.google.com/open?id=0B6bzzVlpLPCbVGpwWjJJdmVjNW8&authuser=0
