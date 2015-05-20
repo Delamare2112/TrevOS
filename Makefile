@@ -66,7 +66,7 @@ clean:
 
 .PHONY: directories
 directories:
-	if [ ! -d $(OBJDIR) -a ! -d $(OUTDIR) ]; then \
+	if [ ! -d $(OBJDIR) ]; then \
 		mkdir -p $(OBJDIR) $(OUTDIR); \
 	fi
 
