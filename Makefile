@@ -80,5 +80,5 @@ iso:
 	@cp $(TARGET).elf $(OUTDIR)/grubISO/boot/ && grub-mkrescue -o $(TARGET).iso $(OUTDIR)/grubISO
 
 .PHONY: fullemu
-grub:
+fullemu:
 	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso
