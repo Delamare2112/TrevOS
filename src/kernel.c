@@ -15,6 +15,6 @@
 
 void StartKernel()
 {
-	InitTerminals();
+	CreateTerminal();
 	WriteString("Hello World!\n");
 }

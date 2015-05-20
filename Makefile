@@ -74,3 +74,11 @@ directories:
 emu:
 	@echo -e $(NO_COLOUR)Emulator starting$(NO_COLOUR)
 	@qemu-system-i386 -kernel $(TARGET).elf
+
+.PHONY: iso
+iso:
+	@cp $(TARGET).elf $(OUTDIR)/grubISO/boot/ && grub-mkrescue -o $(TARGET).iso $(OUTDIR)/grubISO
+
+.PHONY: fullemu
+grub:
+	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso

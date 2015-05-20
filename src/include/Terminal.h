@@ -11,11 +11,9 @@ struct Terminal
 	uint16_t* buffer;
 };
 
-static struct Terminal* currentTerm;
-static struct Terminal* terminalList[MAX_TERMINALS];
+struct Terminal term;
 
-struct Terminal* CreateTerminal(uint8_t id);
-void InitTerminals();
+void CreateTerminal();
 
 void WriteCharAt(char c, uint8_t color, size_t x, size_t y);
 void WriteChar(char c);
