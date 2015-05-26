@@ -4,7 +4,7 @@ void CreateTerminal()
 {
 	term.row = 0;
 	term.column = 0;
-	term.color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK);
+	term.color = NewColorShceme(COLOR_WHITE, COLOR_BLACK);
 	term.buffer = (uint16_t*) VGA_ADDRESS; // VGA text mode buffer output device
 	for (size_t y = 0; y < VGA_HEIGHT; y++)
 		for(size_t x = 0; x < VGA_WIDTH; x++)

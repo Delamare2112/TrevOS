@@ -13,7 +13,7 @@ OUTDIR := bin
 
 TARGET := $(OUTDIR)/$(shell basename `pwd`)
 
-CXDIR := /home/baladash/cxcompiler/bin/
+CXDIR := /home/delamare/cxcompiler/bin/
 
 TRIPLET := i686-elf
 
@@ -75,6 +75,10 @@ emu:
 	@echo -e $(NO_COLOUR)Emulator starting$(NO_COLOUR)
 	@qemu-system-i386 -kernel $(TARGET).elf
 
+.PHONY: emuterm
+emuterm:
+	@qemu-system-i386 -curses -kernel $(TARGET).elf
+
 .PHONY: iso
 iso:
 	@cp $(TARGET).elf $(OUTDIR)/grubISO/boot/ && grub-mkrescue -o $(TARGET).iso $(OUTDIR)/grubISO
@@ -82,3 +86,7 @@ iso:
 .PHONY: fullemu
 fullemu:
 	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso
+
+.PHONY: fullemuterm
+fullemuterm:
+	@qemu-system-i386 -curses -cdrom $(OUTDIR)/$(shell basename `pwd`).iso
