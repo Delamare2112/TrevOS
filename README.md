@@ -16,6 +16,10 @@ You'll need a compiler that can create i686 elfs!  Additionally you need to modi
 
 `make fullemu`: Will boot bin/TrevOS.iso in qemu
 
+`make emuterm`: same as `make emu` but with `-curses` added onto qemu
+
+`make fullemuterm`: same as `make fullemu` but with `-curses` added onto qemu
+
 `make clean`: Will remove all objects and elfs
 
 ## Screenshot
