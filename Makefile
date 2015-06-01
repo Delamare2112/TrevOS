@@ -13,7 +13,7 @@ OUTDIR := bin
 
 TARGET := $(OUTDIR)/$(shell basename `pwd`)
 
-CXDIR := /home/delamare/cxcompiler/bin/
+CXDIR := /bin/cxcompiler/bin/
 
 TRIPLET := i686-elf
 
