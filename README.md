@@ -23,5 +23,5 @@ You'll need a compiler that can create i686 elfs!  Additionally you need to modi
 `make clean`: Will remove all objects and elfs
 
 ## Screenshot
-![TrevOS](https://lh3.googleusercontent.com/NOmVSEqaBBCycYVYv1rFlleneBIW-TQpPkAmuH2sPiiSAGBrB-8DYhQfVMcD_36TY0yIjbPd=w920-h841-rw)
+![TrevOS](http://imgur.com/nSpDIgc)
 
