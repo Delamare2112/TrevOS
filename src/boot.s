@@ -18,14 +18,21 @@ stack_bottom:
 .skip 16384 # 16 KiB
 stack_top:
 
+.section .gdtr
+gdtr:
+
 # The linker script specifies _start as the entry point to the kernel
 # The bootloader will jump to this position once the kernel has been loaded.
 .section .text
 .global _start
 .type _start, @function
 _start:
-	# YAY KERNEL MODE!
-	# not much here yet...
+	cli
+	lgdt	gdtr
+	mov		%cr0, %eax
+	or		1, %eax
+	mov		%cr0, %eax
+
 	# set the esp register to point to the top of our stack
 	movl $stack_top, %esp
 
