@@ -12,9 +12,24 @@
 
 #include "config.h"
 #include "Terminal.h"
+#include "InterruptHandler.h"
+
+void Panic();
 
 void StartKernel()
 {
+	// PICRemap(500, 700);
 	CreateTerminal();
-	WriteString("Hello World!\n");
+	WriteString("Hello World! This is a test!");
+	Panic();
+	// asm("jmp do_test"); // This breaks everything.
+}
+
+void Panic()
+{
+	WriteString("\nChanging color");
+	ChangeColor(COLOR_RED, COLOR_BLACK);
+	WriteString("\nOh Shit! It might be a good idea to kill your system...");
+	for(;;)
+		asm("hlt");
 }

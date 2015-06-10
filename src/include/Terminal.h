@@ -15,6 +15,7 @@ struct Terminal term;
 
 void CreateTerminal();
 
+void ChangeColor(enum Color fg, enum Color bg);
 void WriteCharAt(char c, uint8_t color, size_t x, size_t y);
 void WriteChar(char c);
 void WriteString(const char* message);

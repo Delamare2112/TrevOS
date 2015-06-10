@@ -14,6 +14,11 @@ void CreateTerminal()
 		}
 }
 
+void ChangeColor(enum Color fg, enum Color bg)
+{
+	term.color = NewColorShceme(fg, bg);
+}
+
 void WriteCharAt(char c, uint8_t color, size_t x, size_t y)
 {
 	const size_t i = y * VGA_WIDTH + x;
@@ -22,7 +27,14 @@ void WriteCharAt(char c, uint8_t color, size_t x, size_t y)
 
 void WriteChar(char c)
 {
-	WriteCharAt(c, term.color, term.column, term.row);
+	if(c == '\n')
+	{
+		term.column = -1;
+		if(++term.row == VGA_HEIGHT)
+			term.row = 0;
+	}
+	else
+		WriteCharAt(c, term.color, term.column, term.row);
 	if(++term.column == VGA_WIDTH)
 	{
 		term.column = 0;
