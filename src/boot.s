@@ -20,6 +20,8 @@ stack_top:
 
 .section .gdtr
 gdtr:
+	.short 0
+	.long 0
 
 # The linker script specifies _start as the entry point to the kernel
 # The bootloader will jump to this position once the kernel has been loaded.
