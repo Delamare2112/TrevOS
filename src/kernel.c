@@ -12,7 +12,10 @@
 
 #include "config.h"
 #include "Terminal.h"
-#include "InterruptHandler.h"
+//#include "InterruptHandler.h"
+#include "Memory.h"
+
+// unsigned int = 4
 
 void Panic();
 
@@ -21,6 +24,13 @@ void StartKernel()
 	// PICRemap(500, 700);
 	CreateTerminal();
 	WriteString("Hello World! This is a test!");
+	int* x = malloc(sizeof(int));
+	*x = 5;
+	WriteChar('\n'); WriteChar(*x + '0');
+	char* y = malloc(sizeof(char));
+	*y = 'T';
+	WriteChar('\n'); WriteChar(*y);
+	//WriteString((char)(sizeof(unsigned int)));
 	Panic();
 	// asm("jmp do_test"); // This breaks everything.
 }
