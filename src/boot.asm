@@ -46,20 +46,20 @@ GDT_END:
 section .text
 global _start
 _start:
-	cli
-	mov		eax, cr0
-	or		al, 1
+	; Start hourney to protected land!
+	cli					; I shall not be interrupted
+	mov		eax, cr0	; move cr0 to eax :P
+	or		al, 1		
 	mov		cr0, eax
+	lgdt[GDTR]			; load the GDT
 
-	lgdt[GDTR]
-
-	mov esp, stack_top
+	mov esp, stack_top	; set the stack
 
 	extern StartKernel
-	call StartKernel
+	call StartKernel	; lets take a break from asm
 
 	cli
-.hang:
+.hang: ; Doom to infinite loop
 	hlt
 	jmp .hang
 
