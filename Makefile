@@ -22,18 +22,18 @@ LIBDIR := $(CXDIR)lib/gcc/$(TRIPLET)/4.9.2/
 CC := $(CXDIR)$(TRIPLET)-gcc
 CXX := $(CXDIR)$(TRIPLET)-g++
 LD := $(CXDIR)$(TRIPLET)-ld
-AS := $(CXDIR)$(TRIPLET)-as
+AS := nasm
 
 CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include 
 LDFLAGS :=  -L$(LIBDIR) -T $(ETCDIR)/linker.ld -ffreestanding -O2 -nostdlib 
-ASFLAGS := 
+ASFLAGS := -felf32
 
 CFLAGS += -D'VERSION="$(VERSION)"' 
 
 SRCS := $(shell ls $(SRCDIR)/*.c)
-ASMS := $(shell ls $(SRCDIR)/*.s)
+ASMS := $(shell ls $(SRCDIR)/*.asm)
 _OBJS := $(SRCS:.c=.o)
-_OBJS += $(ASMS:.s=.o)
+_OBJS += $(ASMS:.asm=.o)
 OBJS := $(subst $(SRCDIR),$(OBJDIR),$(_OBJS))
 
 all: debug
@@ -55,7 +55,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo -e $(NO_COLOUR)Building $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.s
+$(OBJDIR)/%.o: $(SRCDIR)/%.asm
 	@echo -e $(NO_COLOUR)Assembling $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(AS) $(ASFLAGS) -o $@ $<
 
