@@ -13,12 +13,7 @@ align 4
 	dd FLAGS
 	dd CHECKSUM
 
-section .bootstrap_stack
-align 4
-stack_bottom:
-times 16384 db 0
-stack_top:
-
+section .GDT
 GDTR:
 GDTsize dw GDT_END-GDT-1
 GDTbase dd 0x500
@@ -42,6 +37,12 @@ DATASEL		EQU $-GDT
 	db	0xCF	; limit(1) Flags:4kb inc,32bit (11001111)
 	db	0x0		; base(1)
 GDT_END:
+
+section .bootstrap_stack
+align 4
+stack_bottom:
+times 16384 db 0
+stack_top:
 
 section .text
 global _start
