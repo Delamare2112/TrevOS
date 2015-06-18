@@ -30,3 +30,6 @@ uint8_t NewColorShceme(enum Color fg, enum Color bg);
 uint16_t Colorfy(char c, uint8_t color);
 
 size_t strlen(const char* str);
+char* itoawb(int val, int base);
+char* itoa(int val);
+

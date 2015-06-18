@@ -47,7 +47,7 @@ stack_top:
 section .text
 global _start
 _start:
-	; Start hourney to protected land!
+	; Start journey to protected land!
 	cli					; I shall not be interrupted
 	mov		eax, cr0	; move cr0 to eax :P
 	or		al, 1		

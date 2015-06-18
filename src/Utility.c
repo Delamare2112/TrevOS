@@ -1,6 +1,8 @@
 // Utility.c
 
 #include "Utility.h"
+#include "Terminal.h"
+#include "Memory.h"
 
 // Color Stuffs //
 uint8_t NewColorShceme(enum Color fg, enum Color bg)
@@ -23,4 +25,20 @@ size_t strlen(const char* str)
 	while(str[size] != 0)
 		size++;
 	return size;
+}
+
+char* itoawb(int val, int base)
+{
+	// char buff[32] = {0};
+	char* buff = malloc(sizeof(char) * 32);
+	int i = 30;
+	for(;val && i; --i, val /= base)
+		buff[i] = "0123456789ABCDEF"[val % base];
+	WriteString(buff);
+	return buff;
+}
+
+char* itoa(int val)
+{
+	return itoawb(val, 10);
 }
