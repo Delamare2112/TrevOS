@@ -13,19 +13,22 @@
 #include "config.h"
 #include "Terminal.h"
 #include "Memory.h"
+#include "InterruptHandler.h"
 
 void Panic();
 
 void StartKernel()
 {
 	CreateTerminal();
-	WriteString("Hello World! This is a test!");
+	WriteString("Hello World! This is a test!\n\n");
+	int i = 16;
+	WriteString(itoawb(i, 10));
+	WriteString("\nDONE WITH THE THING!\n");
 	Panic();
 }
 
 void Panic()
 {
-	WriteString("\nChanging color");
 	ChangeColor(COLOR_RED, COLOR_BLACK);
 	WriteString("\nOh Shit! It might be a good idea to kill your system...");
 	for(;;)

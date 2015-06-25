@@ -33,8 +33,14 @@ char* itoawb(int val, int base)
 	char* buff = malloc(sizeof(char) * 32);
 	int i = 30;
 	for(;val && i; --i, val /= base)
+	{
 		buff[i] = "0123456789ABCDEF"[val % base];
-	WriteString(buff);
+	}
+	int j = 0;
+	i++;
+	for(; i < 31; i++, j++)
+		buff[j] = buff[i];
+	buff[++j] = 0;
 	return buff;
 }
 

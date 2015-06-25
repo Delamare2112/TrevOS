@@ -1,40 +1,107 @@
 #include "InterruptHandler.h"
 
+idtr IDTR;
+Interrupt IDT[256];
+
 void InterruptHandler()
 {
 	WriteString("Interrupt Handled");
 }
 
-void PICSendEOI(unsigned char irq)
+void PICRemap(int pic1, int pic2)
 {
-	if(irq >= 8)
-		OutByte(PICS, PIC_EOI);
-	OutByte(PICM, PIC_EOI);
+	// Save the data currently in the data spaces
+	unsigned char oldMasterData = InByte(MASTER_DATA);
+	unsigned char oldSlaveData = InByte(SLAVE_DATA);
+
+	// reset the chip (EOI: https://en.wikipedia.org/wiki/End_of_interrupt)
+	OutByte(MASTER, EOI);
+
+	// ICW1 control setup
+	OutByte(MASTER, ICW1_INIT + ICW1_ICW4);
+	OutByte(SLAVE, ICW1_INIT + ICW1_ICW4);
+
+	OutByte(MASTER_DATA, pic1);
+	OutByte(SLAVE_DATA, pic2);
+
+	OutByte(MASTER_DATA, 0x04);
+	OutByte(SLAVE_DATA, 0x02);
+
+	OutByte(MASTER_DATA, ICW4_8086);
+	OutByte(SLAVE_DATA, ICW4_8086);
+
+	// Restore data
+	OutByte(MASTER_DATA, oldMasterData);
+	OutByte(SLAVE_DATA, oldSlaveData);
 }
 
-void PICRemap(int offsetM, int offsetS)
+void MaskIRQ(unsigned char irq)
 {
-	unsigned char aM = InByte(PICM_DATA); // masks
-	unsigned char aS = InByte(PICS_DATA);
+	if(irq == 0xFF)
+	{
+		OutByte(MASTER_DATA, 0xFF);
+		OutByte(SLAVE_DATA, 0xFF);
+	}
+	else
+	{
+		irq = irq | (1<<irq);
+		if(irq < 8)
+			OutByte(MASTER_DATA, irq & 0xFF);
+		else
+			OutByte(SLAVE_DATA, irq >> 8);
+	}
+}
 
-	OutByte(PICM, ICW1_INIT+ICW1_ICW4); // starts initialization in casecade mode
-	IOWait();
-	OutByte(PICS, ICW1_INIT+ICW1_ICW4);
-	IOWait();
-	OutByte(PICM_DATA, offsetM); // Master PIC vector offset
-	IOWait();
-	OutByte(PICS_DATA, offsetS); // Slave PIC vector offset
-	IOWait();
-	OutByte(PICM_DATA, 4); // Tell Master about Slave at IRQ2 (0000 0100)
-	IOWait();
-	OutByte(PICS_DATA, 2); // Tell Slave its cascade identity (0000 0010)
-	IOWait();
+void UnmaskIRQ(unsigned char irq)
+{
+	if(irq == 0xFF)
+	{
+		OutByte(MASTER_DATA, 0x00);
+		OutByte(SLAVE_DATA, 0x00);
+	}
+	else
+	{
+		irq = irq & (1<<irq);
+		if(irq < 8)
+			OutByte(MASTER_DATA, irq & 0xFF);
+		else
+			OutByte(SLAVE_DATA, irq >> 8);
+	}
+}
 
-	OutByte(PICM_DATA, ICW4_8086);
-	IOWait();
-	OutByte(PICS_DATA, ICW4_8086);
-	IOWait();
+void loadIDTR()
+{
+	IDTR.limit = 256*(sizeof(Interrupt)-1);
+	IDTR.base = IDT;
+	//WriteString("LoadIDTR");
+	//WriteString(itoa(IDTR.base));
+	// idtr* IDTRptr = &IDTR;
+	// asm volatile("LIDT (%0) ": :"p" (&IDTR));
+}
 
-	OutByte(PICM_DATA, aM);
-	OutByte(PICS_DATA, aS);
+void AddIntterrupt(int number, void (*handler)(), uint dpl)
+{
+	ushort selector = 0x08;
+	ushort settings;
+	uint offset = (uint)handler;
+
+	asm volatile("movw %%cs,%0" :"=g"(selector));
+
+	if(dpl == 0)
+		settings = INT_0;
+	else if(dpl <= 3)
+		settings = INT_3;
+
+	IDT[number].lowOffset = (offset & 0xFFFF);
+	IDT[number].selector = selector;
+	IDT[number].settings = settings;
+	IDT[number].highOffset = (offset >> 16);
+}
+
+void AddInterrupts()
+{
+	for(int i=0; i>31; i++)
+	{
+		AddInterrupt(i, InterruptHandler, 0);
+	}
 }

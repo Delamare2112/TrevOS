@@ -2,27 +2,46 @@
 
 #include "Terminal.h"
 #include "IOAccess.h"
+#include "defines.h"
 
-#define PICM 0x20
-#define PICS 0xA0
-#define PICM_DATA (PICM+1)
-#define PICS_DATA (PICS+1)
+#define MASTER_DATA 0x21
+#define SLAVE_DATA 0xA1
 
-#define PIC_EOI 0x20
+#define MASTER 0x20
+#define SLAVE 0xA0
+#define EOI 0x20
 
-#define ICW1_ICW4	0x01		/* ICW4 (not) needed */
-#define ICW1_SINGLE	0x02		/* Single (cascade) mode */
-#define ICW1_INTERVAL4	0x04		/* Call address interval 4 (8) */
-#define ICW1_LEVEL	0x08		/* Level triggered (edge) mode */
-#define ICW1_INIT	0x10		/* Initialization - required! */
- 
-#define ICW4_8086	0x01		/* 8086/88 (MCS-80/85) mode */
-#define ICW4_AUTO	0x02		/* Auto (normal) EOI */
-#define ICW4_BUF_SLAVE	0x08		/* Buffered mode/slave */
-#define ICW4_BUF_MASTER	0x0C		/* Buffered mode/master */
-#define ICW4_SFNM	0x10		/* Special fully nested (not) */
+#define ICW1_INIT 0x10
+#define ICW1_EDGE 0x08
+#define ICW1_SINGLE 0x02
+#define ICW1_ICW4 0x01
+
+#define ICW4_SFNM 0x10
+#define ICW4_BUFFER 0x08
+#define ICW4_MASTER 0x04
+#define ICW4_AROI 0x02
+#define ICW4_8086 0x01
+
+#define INT_0 0x8E00
+#define INT_3 0xEE00
+
+typedef struct
+{
+	ushort lowOffset; // low nibble of offset to handler of interrupt
+	ushort selector; // GDT selector
+	ushort settings; // settings for the int
+	ushort highOffset; // high nibble to handler code
+} __attribute__((packed)) Interrupt;
+
+typedef struct
+{
+	ushort limit; // size of idt
+	Interrupt* base; // a pointer to the base
+} idtr;
 
 void InterruptHandler();
-void PICSendEOI(unsigned char irq);
 void PICRemap(int offsetM, int offsetS);
-
+void MaskIRQ(unsigned char irq);
+void UnmaskIRQ(unsigned char irq);
+void AddInterrupt(int number, void (*handler)(), uint dpl);
+void AddInterrupts();
