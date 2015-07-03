@@ -27,19 +27,22 @@
 
 typedef struct
 {
-	ushort lowOffset; // low nibble of offset to handler of interrupt
-	ushort selector; // GDT selector
-	ushort settings; // settings for the int
-	ushort highOffset; // high nibble to handler code
-} __attribute__((packed)) Interrupt;
+	unsigned int a, b;
+} __attribute__((packed)) GateDescriptor;
 
 typedef struct
 {
-	ushort limit; // size of idt
-	Interrupt* base; // a pointer to the base
-} idtr;
+	uint16_t size;
+	uint32_t address;
+} __attribute__((packed)) DescriptorPointer;
+
+DescriptorPointer IDT_Descriptor;
+GateDescriptor IDT_Table[256];
+
+extern void InterruptWrapper0();
 
 void InterruptHandler();
+void MakeInterruptsWork();
 void PICRemap(int offsetM, int offsetS);
 void MaskIRQ(unsigned char irq);
 void UnmaskIRQ(unsigned char irq);

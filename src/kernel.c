@@ -21,9 +21,10 @@ void StartKernel()
 {
 	CreateTerminal();
 	WriteString("Hello World! This is a test!\n\n");
-	int i = 16;
-	WriteString(itoawb(i, 10));
-	WriteString("\nDONE WITH THE THING!\n");
+	MakeInterruptsWork();
+	PICRemap(0x20, 0x28);
+	MaskIRQ(0xFF);
+	asm volatile("int $10");
 	Panic();
 }
 

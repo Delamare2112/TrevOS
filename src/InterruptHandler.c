@@ -1,11 +1,10 @@
 #include "InterruptHandler.h"
 
-idtr IDTR;
-Interrupt IDT[256];
-
 void InterruptHandler()
 {
 	WriteString("Interrupt Handled");
+	for(;;)
+		asm("hlt");
 }
 
 void PICRemap(int pic1, int pic2)
@@ -69,39 +68,40 @@ void UnmaskIRQ(unsigned char irq)
 	}
 }
 
-void loadIDTR()
+#define GETBIT(N,P) ((N >> P) & 1)
+
+void MakeInterruptsWork()
 {
-	IDTR.limit = 256*(sizeof(Interrupt)-1);
-	IDTR.base = IDT;
-	//WriteString("LoadIDTR");
-	//WriteString(itoa(IDTR.base));
-	// idtr* IDTRptr = &IDTR;
-	// asm volatile("LIDT (%0) ": :"p" (&IDTR));
+	AddInterrupts();
+	IDT_Descriptor.size = (256*8)-1;
+	IDT_Descriptor.address = (unsigned int)IDT_Table;
+	WriteString(itoawb(&IDT_Table, 16));
+	asm volatile("lidt %0"::"m" (IDT_Descriptor));
 }
 
 void AddIntterrupt(int number, void (*handler)(), uint dpl)
 {
-	ushort selector = 0x08;
-	ushort settings;
-	uint offset = (uint)handler;
+	unsigned long address = (unsigned long)handler; // Because you can't bitwise operate an address(pointer)
+	int high = address & 0xFFFF0000;
+	int low = address & 0x0000FFFF;
+	int p = 1; // selector present flag
+	int selector = 1<<3; // segment selector for destination code segment
+	int d = 1; // size of gate.  we have 32 bits so we put a one here.
+	int type = 14;
+	IDT_Table[number].b = high;
+	IDT_Table[number].b |= p << 15;
+	IDT_Table[number].b |= dpl << 13;
+	IDT_Table[number].b |= d << 11;
+	IDT_Table[number].b |= type << 8;
 
-	asm volatile("movw %%cs,%0" :"=g"(selector));
-
-	if(dpl == 0)
-		settings = INT_0;
-	else if(dpl <= 3)
-		settings = INT_3;
-
-	IDT[number].lowOffset = (offset & 0xFFFF);
-	IDT[number].selector = selector;
-	IDT[number].settings = settings;
-	IDT[number].highOffset = (offset >> 16);
+	IDT_Table[number].a = low;
+	IDT_Table[number].a |= selector << 16;
 }
 
 void AddInterrupts()
 {
 	for(int i=0; i>31; i++)
 	{
-		AddInterrupt(i, InterruptHandler, 0);
+		AddInterrupt(i, InterruptWrapper0, 0);
 	}
 }
