@@ -3,6 +3,7 @@
 #include "Terminal.h"
 #include "IOAccess.h"
 #include "defines.h"
+#include "Descriptors.h"
 
 #define MASTER_DATA 0x21
 #define SLAVE_DATA 0xA1
@@ -24,20 +25,6 @@
 
 #define INT_0 0x8E00
 #define INT_3 0xEE00
-
-typedef struct
-{
-	unsigned int a, b;
-} __attribute__((packed)) GateDescriptor;
-
-typedef struct
-{
-	uint16_t size;
-	uint32_t address;
-} __attribute__((packed)) DescriptorPointer;
-
-DescriptorPointer IDT_Descriptor;
-GateDescriptor IDT_Table[256];
 
 extern void InterruptWrapper0();
 
