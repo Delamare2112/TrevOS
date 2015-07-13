@@ -24,6 +24,6 @@ void InitializeGDT()
 	GDT_Table[2] = CreateDescriptor(0, 0xffffffff, GDT_DATA_PL0);
 	GDT_Descriptor.size = (256*8);
 	GDT_Descriptor.address = (unsigned int)GDT_Table;
-	asm volatile("lgdt %0"::"m" (GDT_Descriptor));
+	LoadGDT(&GDT_Descriptor);
 	ReloadSegments();
 }

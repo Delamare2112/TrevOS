@@ -2,13 +2,13 @@
 
 void OutByte(unsigned short port, unsigned char val) // Sends an unsigned char value to a location
 {
-	asm volatile("outb %0, %1" : : "a"(val), "Nd"(port));
+	asm volatile ("outb %1, %0" : : "dN" (port), "a" (val));
 }
 
 unsigned char InByte(unsigned short port)
 {
 	unsigned char ret;
-	asm volatile("inb %1, %0" : "=a"(ret) : "Nd"(port));
+	asm volatile ("inb %1, %0" : "=a" (ret) : "dN" (port));
 	return ret;
 }
 

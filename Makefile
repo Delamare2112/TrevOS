@@ -73,11 +73,11 @@ directories:
 .PHONY: emu
 emu:
 	@echo -e $(NO_COLOUR)Emulator starting$(NO_COLOUR)
-	@qemu-system-i386 -kernel $(TARGET).elf
+	@qemu-system-i386 -kernel $(TARGET).elf -no-reboot
 
 .PHONY: emuterm
 emuterm:
-	@qemu-system-i386 -curses -kernel $(TARGET).elf
+	@qemu-system-i386 -curses -kernel $(TARGET).elf -no-reboot
 
 .PHONY: iso
 iso:
@@ -85,8 +85,8 @@ iso:
 
 .PHONY: fullemu
 fullemu:
-	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso
+	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso -no-reboot
 
 .PHONY: fullemuterm
 fullemuterm:
-	@qemu-system-i386 -curses -cdrom $(OUTDIR)/$(shell basename `pwd`).iso
+	@qemu-system-i386 -curses -cdrom $(OUTDIR)/$(shell basename `pwd`).iso -no-reboot

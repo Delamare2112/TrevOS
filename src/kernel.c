@@ -13,7 +13,7 @@
 #include "config.h"
 #include "Terminal.h"
 #include "Memory.h"
-// #include "InterruptHandler.h"
+#include "InterruptHandler.h"
 #include "GDT.h"
 
 void Panic();
@@ -24,17 +24,19 @@ void StartKernel()
 	WriteString("Hello World! This is a test!\n\n");
 	InitializeGDT();
 	MakeInterruptsWork();
-	// PICRemap(0x20, 0x28);
+	PICRemap(0x20, 0x28);
 	// MaskIRQ(0xFF);
 	//
 	// 	OutByte(0x21,0xfd);
 	// 	OutByte(0xa1,0xff);
 	// 	asm("sti");
 	//
-	// asm volatile("int $10");
+	asm volatile("int $10");
 	// OutByte(0xA0, 0x20);
 	// OutByte(0x20, 0x20);
-	Panic();
+	// Panic();
+	for(;;);
+	WriteString("\nHow did I get here?\n");
 }
 
 void Panic()
