@@ -25,16 +25,6 @@ void StartKernel()
 	InitializeGDT();
 	MakeInterruptsWork();
 	PICRemap(0x20, 0x28);
-	// MaskIRQ(0xFF);
-	//
-	// 	OutByte(0x21,0xfd);
-	// 	OutByte(0xa1,0xff);
-	// 	asm("sti");
-	//
-	asm volatile("int $10");
-	// OutByte(0xA0, 0x20);
-	// OutByte(0x20, 0x20);
-	// Panic();
 	for(;;);
 	WriteString("\nHow did I get here?\n");
 }

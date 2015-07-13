@@ -98,9 +98,7 @@ void MakeInterruptsWork()
 	AddInterrupts();
 	IDT_Descriptor.size = (256*8)-1;
 	IDT_Descriptor.address = (unsigned int)IDT_Table;
-	// WriteString(itoawb(&IDT_Table, 16));
-	// asm volatile("lidt %0"::"m" (IDT_Descriptor));
-	LoadIDT(&IDT_Descriptor);
+	asm volatile("lidt %0"::"m" (IDT_Descriptor));
 }
 
 void AddIntterrupt(int number, void (*handler)())
@@ -124,10 +122,6 @@ void AddIntterrupt(int number, void (*handler)())
 
 void AddInterrupts()
 {
-	// for(int i=0; i>255; i++)
-	// {
-	// 	AddIntterrupt(i, InterruptWrapper0, 0);
-	// }
 	AddIntterrupt(0,InterruptWrapper0);
 	AddIntterrupt(1,InterruptWrapper1);
 	AddIntterrupt(2,InterruptWrapper2);

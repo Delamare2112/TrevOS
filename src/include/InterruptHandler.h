@@ -26,8 +26,6 @@
 #define INT_0 0x8E00
 #define INT_3 0xEE00
 
-// extern void InterruptWrapper0();
-
 extern void InterruptWrapper0();
 extern void InterruptWrapper1();
 extern void InterruptWrapper2();
@@ -283,11 +281,6 @@ extern void InterruptWrapper252();
 extern void InterruptWrapper253();
 extern void InterruptWrapper254();
 extern void InterruptWrapper255();
-
-static inline void LoadIDT(const DescriptorPointer* ptr)
-{
-	asm volatile("lidt %0"::"m" (*ptr));
-}
 
 void InterruptHandler();
 void MakeInterruptsWork();

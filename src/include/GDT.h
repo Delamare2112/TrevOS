@@ -41,8 +41,3 @@ SEG_PRIV(0)     | SEG_DATA_RDWR
 extern void ReloadSegments();
 
 void InitializeGDT();
-
-static inline void LoadGDT(const DescriptorPointer *ptr)
-{
-	asm volatile("lgdt %0"::"m" (*ptr));
-}
