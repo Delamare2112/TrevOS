@@ -29,8 +29,8 @@ size_t strlen(const char* str)
 
 char* itoawb(int val, int base)
 {
-	// char buff[32] = {0};
 	char* buff = malloc(sizeof(char) * 32);
+	buff[0] = '0'; // Incase val is 0
 	int i = 30;
 	for(;val && i; --i, val /= base)
 	{
@@ -47,4 +47,34 @@ char* itoawb(int val, int base)
 char* itoa(int val)
 {
 	return itoawb(val, 10);
+}
+
+void strcat(char* one, char* two)
+{
+	int oneLength = strlen(one);
+	for(int i = oneLength; i < oneLength + strlen(two); i++)
+	{
+		one[i] = two[i - oneLength];
+	}
+}
+
+void strReplaceAt(char* main, char* value, int length, int index)
+{
+	for(int i = 0; i < length; i++)
+		main[index + i] = value[i];
+}
+
+// FIXME: Make this work when key and value are not of the same length
+void strReplace(char* main, char* key, char* value)
+{
+	int keyLen = strlen(key);
+	int valueLen = strlen(value);
+	for(int i=0; i < strlen(main); i++)
+	{
+		for(int j = 0; j < keyLen && main[i+j] == key[j]; j++)
+		{
+			if(j == keyLen)
+				strReplaceAt(main, value, valueLen, i);
+		}
+	}
 }

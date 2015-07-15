@@ -13,47 +13,20 @@ align 4
 	dd FLAGS
 	dd CHECKSUM
 
-; section .GDT
-; GDTR:
-; GDTsize dw GDT_END-GDT-1
-; GDTbase dd 0x500
-; 
-; GDT:
-; NULL_SEL	EQU $-GDT ; null descriptor
-; 	dd 0x0
-; 	dd 0x0
-; CODESEL		EQU $-GDT
-; 	dw	0xFFFF	; limit(2)
-; 	dw	0x0		; base(3)
-; 	db	0x0		; base(2)
-; 	db	0x9A	; type: present, ring0, code, exec/read/accessed (10011000)
-; 	db	0xCF	; limit(1) Flags:4kb inc,32bit (11001111)
-; 	dd	0x0		; base(1)
-; DATASEL		EQU $-GDT
-; 	dw	0xFFFF	; limit(2)
-; 	dw	0x0		; base(3)
-; 	db	0x0		; base(20
-; 	db	0x92	; type: present, ring0, data/stack,read/write (10010010)
-; 	db	0xCF	; limit(1) Flags:4kb inc,32bit (11001111)
-; 	db	0x0		; base(1)
-; GDT_END:
-
 section .bootstrap_stack
 align 4
 stack_bottom:
-times 16384 db 0
+times 32768 db 0
 stack_top:
 
 section .text
 global _start
 _start:
 	; Start journey to protected land!
-; 	cli					; I shall not be interrupted
+	cli					; I shall not be interrupted
 ; 	mov		eax, cr0	; move cr0 to eax :P
 ; 	or		al, 1		
 ; 	mov		cr0, eax
-; 	lgdt[GDTR]			; load the GDT
-; 	
 ; 	sti					; reinable interrupts
 
 	mov esp, stack_top	; set the stack
