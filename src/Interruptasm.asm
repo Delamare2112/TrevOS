@@ -31,8 +31,8 @@ AddInterrupts:
 	call AddInterrupt
 	%assign n n+1
 	%endrep
-	extern SayHello
-	call SayHello ; WHY DOES THIS WORK?!
+	extern MakeItWork
+	call MakeItWork ; so much jank it hurts...
 	; hlt
 	; popad
 	; add esp, 4

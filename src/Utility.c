@@ -18,7 +18,7 @@ uint16_t Colorfy(char c, uint8_t color)
 }
 // End Color Stuffs //
 
-// strlen is in C standard but we live outside the standard so we write our own.
+// The fun of living outside of the C standard
 size_t strlen(const char* str)
 {
 	size_t size = 0;
@@ -64,17 +64,13 @@ void strReplaceAt(char* main, char* value, int length, int index)
 		main[index + i] = value[i];
 }
 
-// FIXME: Make this work when key and value are not of the same length
+// TODO: Make this work when key and value are not of the same length
 void strReplace(char* main, char* key, char* value)
 {
 	int keyLen = strlen(key);
 	int valueLen = strlen(value);
 	for(int i=0; i < strlen(main); i++)
-	{
 		for(int j = 0; j < keyLen && main[i+j] == key[j]; j++)
-		{
 			if(j == keyLen)
 				strReplaceAt(main, value, valueLen, i);
-		}
-	}
 }

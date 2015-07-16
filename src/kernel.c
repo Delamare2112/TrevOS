@@ -23,9 +23,9 @@ void StartKernel()
 	CreateTerminal();
 	WriteString("Hello World! This is a test!\n\n");
 	InitializeGDT();
-	MakeInterruptsWork();
-	PICRemap(0x20, 0x28);
-	for(;;);
+	MakeInterruptsWork(); // FIXME: This will never return
+	PICRemap(0x20, 0x28); // <- Called in MakeItWork until I can make the above funcion behave
+	for(;;) asm("hlt");
 	WriteString("\nHow did I get here?\n");
 }
 

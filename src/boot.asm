@@ -23,11 +23,11 @@ section .text
 global _start
 _start:
 	; Start journey to protected land!
-	cli					; I shall not be interrupted
-; 	mov		eax, cr0	; move cr0 to eax :P
-; 	or		al, 1		
-; 	mov		cr0, eax
-; 	sti					; reinable interrupts
+	; cli					; I shall not be interrupted
+	; mov		eax, cr0	; move cr0 to eax :P
+	; or		al, 1		
+	; mov		cr0, eax
+	; sti					; reinable interrupts
 
 	mov esp, stack_top	; set the stack
 

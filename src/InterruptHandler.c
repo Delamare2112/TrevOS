@@ -2,22 +2,30 @@
 
 int counterOfThings = 0;
 
+void KeybaordHandler()
+{
+	char info = InByte(0x60);
+	if(!(info & 0x80)) // 0x80 aka 10000000 is the released flag
+		WriteChar("\0\0\0\01234567890-=\0\tqwertyuiop[]\n\0asdfghjkl;\'`\0\\zxcvbnm,./\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0-\05\0+\0\0\0\0\0\0\0\0\0\0"[info]);
+}
+
 void InterruptHandler(CPU_State s, int vector)
 {
-	s.eax++;s.eax--; // remove warning about s
-	WriteString("\nNumber: ");
-	WriteString(itoa(vector));
-
+	s = s; // remove warning about s
 	if(vector == 0x21)
-		InByte(0x60); // If I don't take the byte, keyboard will stop working.
-
+		KeybaordHandler();
+	else
+	{
+		WriteString("\nNumber: ");
+		WriteString(itoa(vector));
+		WriteString(" Interrupt Handled (");
+		WriteString(itoa(++counterOfThings));
+		WriteString(")\n");
+	}
 	if(vector >= 20)
 		OutByte(SLAVE, 0x20);
 	OutByte(MASTER, 0x20);
 
-	WriteString(" Interrupt Handled (");
-	WriteString(itoa(++counterOfThings));
-	WriteString(")\n");
 }
 
 void PICRemap(int pic1, int pic2)
@@ -88,22 +96,24 @@ void UnmaskIRQ(unsigned char irq)
 
 void MakeInterruptsWork()
 {
-	AddInterrupts();
-	// asm("hlt");
+	AddInterrupts(); // FIXME: Function never returns
 	IDT_Descriptor.size = (256*8)-1;
 	IDT_Descriptor.address = (unsigned int)IDT_Table;
 	asm volatile("lidt %0"::"m" (IDT_Descriptor));
 }
 
-void LoadInterrupts()
+void MakeItWork() // FIXME: Shouldn't even be a function
 {
-	 // WHY DOES THIS WORK?!
 	IDT_Descriptor.size = (256*8)-1;
 	IDT_Descriptor.address = (unsigned int)IDT_Table;
 	asm volatile("lidt %0"::"m" (IDT_Descriptor));
-	PICRemap(0x20, 0x28); // This shouldn't be here!
-	// WriteString("\nI died! :D\n");
-	for(;;);
+	PICRemap(0x20, 0x28);
+	
+	// Done setting up kernel!
+
+	// If we return, AddInterrupts will attempt to return and kill the OS for some reason.
+	// Because of this let's just sit here :P
+	for(;;) asm("hlt");
 }
 
 void AddInterrupt(int number, void (*handler)())
@@ -123,9 +133,4 @@ void AddInterrupt(int number, void (*handler)())
 
 	IDT_Table[number].a = low;
 	IDT_Table[number].a |= selector << 16;
-}
-
-void SayHello()
-{
-	LoadInterrupts(); // WHY DOES THIS WORK?!
 }
