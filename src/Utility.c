@@ -29,7 +29,7 @@ size_t strlen(const char* str)
 
 char* itoawb(int val, int base)
 {
-	char* buff = malloc(sizeof(char) * 32);
+	char* buff = kmalloc(sizeof(char) * 32);
 	buff[0] = '0'; // Incase val is 0
 	int i = 30;
 	for(;val && i; --i, val /= base)

@@ -5,6 +5,8 @@ SECTIONS
 	/* It is convention to place for kernels */
 	. = 1M;
 
+	StartOfKernel = .;
+
 	.text BLOCK(4K) : ALIGN(4K)
 	{
 		*(.multiboot)
@@ -24,4 +26,6 @@ SECTIONS
 		*(.bss)
 		*(.bootstrap_stack)
 	}
+
+	EndOfKernel = .;
 }
