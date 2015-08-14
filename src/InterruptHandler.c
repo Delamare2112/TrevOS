@@ -111,6 +111,8 @@ void MakeItWork() // FIXME: Shouldn't even be a function
 	
 	// Done setting up kernel!
 
+	asm volatile("int $55");
+
 	// If we return, AddInterrupts will attempt to return and kill the OS for some reason.
 	// Because of this let's just sit here :P
 	for(;;) asm("hlt");

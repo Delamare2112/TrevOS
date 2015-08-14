@@ -21,19 +21,23 @@ void Panic();
 void StartKernel()
 {
 	CreateTerminal();
-	WriteString("Hello World! This is a test!\n\n");
 	InitializeGDT();
 	InitMMU();
+	
+	WriteString("Hello World! This is a test!\n\n");
+
 	char* str = kmalloc(4);
 	str[0] = 'b'; str[1] = 'o'; str[2] = 'b'; str[3] = '\0';
 	WriteString(str);
 	WriteChar('\n');
+	// free(str);
 
 	char* str2 = kmalloc(4);
+	if(str2 == str)
+		WriteString("writing over str1\n");
 	str2[0] = 'c'; str2[1] = 'a'; str2[2] = 't'; str2[3] = '\0';
 	WriteString(str2);
 	WriteChar('\n');
-	WriteString(str);
 	
 	MakeInterruptsWork(); // FIXME: This will never return
 	PICRemap(0x20, 0x28); // <- Called in MakeItWork until I can make the above funcion behave

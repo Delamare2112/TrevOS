@@ -41,6 +41,7 @@ char* itoawb(int val, int base)
 	for(; i < 31; i++, j++)
 		buff[j] = buff[i];
 	buff[++j] = 0;
+	free(buff);
 	return buff;
 }
 
