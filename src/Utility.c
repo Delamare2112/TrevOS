@@ -29,8 +29,8 @@ size_t strlen(const char* str)
 
 char* itoawb(int val, int base)
 {
-	char* buff = kmalloc(sizeof(char) * 32);
-	buff[0] = '0'; // Incase val is 0
+	char buff[32];
+	buff[0] = '0'; buff[1] = '\0'; // Incase val is 0
 	int i = 30;
 	for(;val && i; --i, val /= base)
 	{
@@ -41,7 +41,8 @@ char* itoawb(int val, int base)
 	for(; i < 31; i++, j++)
 		buff[j] = buff[i];
 	buff[++j] = 0;
-	free(buff);
+	// free(buff);
+	WriteString(""); // Needs to be called or bad things happen for some reason...
 	return buff;
 }
 

@@ -1,22 +1,4 @@
-#if defined(__linux__)
-#error "Why you no cross-compile?! You want to hurt?!"
-#endif
-
-#if !defined(__i386__)
-#error "you might want to try a i386-elf compiler"
-#endif
-
-#include <stdbool.h> // booleve it or not C doesn't have bools by deafult!
-#include <stddef.h>
-#include <stdint.h>
-
-#include "config.h"
-#include "Terminal.h"
-#include "Memory.h"
-#include "InterruptHandler.h"
-#include "GDT.h"
-
-void Panic();
+#include "kernel.h"
 
 void StartKernel()
 {
@@ -24,20 +6,28 @@ void StartKernel()
 	InitializeGDT();
 	InitMMU();
 	
-	WriteString("Hello World! This is a test!\n\n");
+	// WriteString("Hello World! This is a test!\n\n");
+	// ShowMemory();
+	WriteChar('\n');
 
 	char* str = kmalloc(4);
-	str[0] = 'b'; str[1] = 'o'; str[2] = 'b'; str[3] = '\0';
+	// str[0] = 'b'; str[1] = 'o'; str[2] = 'b'; str[3] = '\0';
+	str = "bob";
 	WriteString(str);
 	WriteChar('\n');
 	// free(str);
+	// ShowMemory();
 
 	char* str2 = kmalloc(4);
-	if(str2 == str)
-		WriteString("writing over str1\n");
+	// if(str2 == str)
+	// 	WriteString("writing over str1\n");
 	str2[0] = 'c'; str2[1] = 'a'; str2[2] = 't'; str2[3] = '\0';
 	WriteString(str2);
 	WriteChar('\n');
+	// ShowMemory();
+
+	free(str);
+	free(str2);
 	
 	MakeInterruptsWork(); // FIXME: This will never return
 	PICRemap(0x20, 0x28); // <- Called in MakeItWork until I can make the above funcion behave

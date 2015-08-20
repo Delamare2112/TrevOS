@@ -5,16 +5,43 @@
 
 MemoryNode* freeMemory;
 MemoryNode* usedMemory;
-unsigned int* mainMemoryStart;
+void* mainMemoryStart;
 
 MemoryNode* usedTop;
 MemoryNode* usedBottom;
 MemoryNode* freeTop;
 MemoryNode* freeBottom;
 
+void ShowMemory()
+{
+	MemoryNode* currentNode = freeTop;
+	WriteString("FREE:\n");
+	for(int i = 0; currentNode->size != 0; i++)
+	{
+		WriteString(itoa(currentNode));
+		WriteString(": "); WriteString(itoa(currentNode->size)); WriteString(": ");
+		WriteString(itoa(currentNode->physicalAddress));WriteString(": ");
+		WriteString(itoa(currentNode->next));
+		WriteString("\n");
+		currentNode = currentNode->next;
+	}
+	currentNode = usedTop;
+	WriteString("USED:\n");
+	for(int i = 0; currentNode != 0; i++)
+	{
+		WriteString(itoa(currentNode));
+		WriteString(": "); WriteString(itoa(currentNode->size)); WriteString(": ");
+		WriteString(itoa(currentNode->physicalAddress));WriteString(": ");
+		WriteString(itoa(currentNode->next));
+		WriteString("\n");
+		currentNode = currentNode->next;
+	}
+	WriteString("\n");
+}
+
 void* kmalloc(unsigned int size)
 {
-	// WriteString("allocating "); WriteString(itoa(size)); WriteChar('\n');
+	WriteString("allocating "); WriteString(itoa(size));
 	MemoryNode* oldUsedButtomNext = usedBottom->next;
 
 	MemoryNode* freeNode = freeTop;
@@ -39,6 +66,7 @@ void* kmalloc(unsigned int size)
 
 	freeNode->physicalAddress += size;
 	freeNode->size -= size;
+	WriteString(" at "); WriteString(itoa(ret)); WriteString("\n");
 	return ret;
 }
 
@@ -50,6 +78,11 @@ void free(void* addr)
 	{
 		prev = target;
 		target = target->next;
+		if(!target)
+		{
+			WriteString(itoa(addr)); WriteString(" not found in allocation list\n");
+			return;
+		}
 	}
 	if(prev)
 		prev->next = target->next;
@@ -59,7 +92,8 @@ void free(void* addr)
 
 void InitMMU()
 {
-	WriteString("Setting up MMU\n");
+	WriteString("Kernel at "); WriteString(itoa(StartOfKernel));
+	WriteString("\nSetting up MMU at "); WriteString(itoa(EndOfKernel)); WriteString("\n");
 	freeMemory = EndOfKernel;
 	usedMemory = freeMemory + NODE_SPACE_SIZE;
 	mainMemoryStart = usedMemory + NODE_SPACE_SIZE;
@@ -69,14 +103,14 @@ void InitMMU()
 	freeTop = freeMemory;
 	freeBottom = freeMemory + 1;
 	unsigned int i;
-	// WriteString("about to write until"); WriteString(itoa(50)); WriteChar('\n');
 	for(i = 1; i < (NODE_SPACE_SIZE / sizeof(MemoryNode)) - 1; i++)
 	{
 		freeMemory[i].next = freeMemory + 1 + i;
 		usedMemory[i].next = usedMemory + 1 + i;
 		// WriteString("Setting MemoryNode: "); WriteString(itoa(i)); WriteChar('\n');
 	}
-	freeTop->size = (unsigned int*)4294967296 - mainMemoryStart;
+	freeTop->size = (void*)StartOfKernel - mainMemoryStart;
+	// WriteString("freeTop size: "); WriteString(itoa(freeTop->size));
 	freeTop->physicalAddress = mainMemoryStart;
-	WriteString("MMU Setup with "); WriteString(itoa(i * 2)); WriteString(" nodes\n");
+	WriteString("\nMMU Setup with "); WriteString(itoa(i * 2)); WriteString(" nodes\n");
 }
