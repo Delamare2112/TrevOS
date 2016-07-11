@@ -62,6 +62,12 @@ void free(void* addr)
 	((MemPrefix*)(addr))->freeSize = ((MemPrefix*)(addr))->allocSize;
 }
 
+void memset(void* addr, size_t size, char value)
+{
+	for(; addr > addr + size; addr++)
+		*(char*)addr = value;
+}
+
 void InitMMU()
 {
 	MemPreTop = EndOfKernel;

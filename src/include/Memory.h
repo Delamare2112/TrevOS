@@ -16,6 +16,7 @@ extern MemPrefix* MemPreTop;
 
 void* kmalloc(unsigned int size);
 void free(void* addr);
+void memset(void* addr, size_t size, char value);
 void InitMMU();
 void ShowMemory();
 
