@@ -1,116 +1,87 @@
 #include "Memory.h"
 
-// #define NODE_SPACE_SIZE 4194304
-#define NODE_SPACE_SIZE 800
-
-MemoryNode* freeMemory;
-MemoryNode* usedMemory;
-void* mainMemoryStart;
-
-MemoryNode* usedTop;
-MemoryNode* usedBottom;
-MemoryNode* freeTop;
-MemoryNode* freeBottom;
-
-void ShowMemory()
+inline size_t* GetDataPtr(MemPrefix* pref)
 {
-	MemoryNode* currentNode = freeTop;
-	WriteString("FREE:\n");
-	for(int i = 0; currentNode->size != 0; i++)
-	{
-		WriteString(itoa(currentNode));
-		WriteString(": "); WriteString(itoa(currentNode->size)); WriteString(": ");
-		WriteString(itoa(currentNode->physicalAddress));WriteString(": ");
-		WriteString(itoa(currentNode->next));
-		WriteString("\n");
-		currentNode = currentNode->next;
-	}
-	currentNode = usedTop;
-	WriteString("USED:\n");
-	for(int i = 0; currentNode != 0; i++)
-	{
-		WriteString(itoa(currentNode));
-		WriteString(": "); WriteString(itoa(currentNode->size)); WriteString(": ");
-		WriteString(itoa(currentNode->physicalAddress));WriteString(": ");
-		WriteString(itoa(currentNode->next));
-		WriteString("\n");
-		currentNode = currentNode->next;
-	}
-	WriteString("\n");
+	return (size_t*)(pref + sizeof(MemPrefix));
 }
 
-void* kmalloc(unsigned int size)
+void* kalloc(size_t size)
 {
-	WriteString("allocating "); WriteString(itoa(size));
-	MemoryNode* oldUsedButtomNext = usedBottom->next;
+	// Make sure size is at least min required.
+	if(size < sizeof(size_t))
+		size = sizeof(size_t);
 
-	MemoryNode* freeNode = freeTop;
-	while(freeNode->size < size)
-		freeNode = freeNode->next;
-	// if(freeNode->size != size && freeNode != freeMemory)
-	// {
-	// 	MemoryNode* oldFreeButtomNext = freeBottom->next;
-
-	// 	freeBottom->size = freeNode->size - size;
-	// 	freeBottom->next = freeTop;
-	// 	freeTop = freeBottom;
-	// 	freeBottom = oldFreeButtomNext;
-	// }
-
-	usedTop->size = size;
-	usedTop->physicalAddress = freeNode->physicalAddress;
-	void* ret = usedTop->physicalAddress;
-	usedBottom->next = usedTop;
-	usedTop = usedBottom;
-	usedBottom = oldUsedButtomNext;
-
-	freeNode->physicalAddress += size;
-	freeNode->size -= size;
-	WriteString(" at "); WriteString(itoa(ret)); WriteString("\n");
-	return ret;
+	// Find a place for our allocation
+	MemPrefix* current = MemPreTop;
+	MemPrefix* previous = -1;
+	while(current->allocSize < size)
+	{
+		// if at end of the road
+		register void* next = *GetDataPtr(current);
+		if(next == -1)
+		{
+			ChangeColor(4, 0);
+			WriteString("kalloc error: kalloc request too damn high");
+			ChangeColor(15, 0);
+			return -1;
+		}
+		previous = current;
+		current = next;
+	}
+	// We have a location!
+	// Do we have space to create a new free prefix?
+	if(size + sizeof(MemPrefix) + sizeof(size_t) < current->allocSize)
+	{
+		// create new prefix
+		void* newPrefix = current + sizeof(MemPrefix) + size;
+		// link in the new free spot
+		if(previous != -1)
+			*GetDataPtr(previous) = newPrefix;
+		newPrefix->alloced = 0;
+		newPrefix->allocSize = current->allocSize - sizeof(MemPrefix);
+		// set the next free spot to current's next
+		*GetDataPtr(newPrefix) = *GetDataPtr(current);
+		current->freeSize = size;
+	}
+	else
+	{
+		current->freeSize = current->allocSize;
+		if(previous != -1)
+			*GetDataPtr(previous) = *GetDataPtr(current);
+	}
+	current->alloced = 1;
+	current->allocSize = size;
+	return current;
 }
 
 void free(void* addr)
 {
-	MemoryNode* target = usedTop;
-	MemoryNode* prev = 0;
-	while(target->physicalAddress != addr)
-	{
-		prev = target;
-		target = target->next;
-		if(!target)
-		{
-			WriteString(itoa(addr)); WriteString(" not found in allocation list\n");
-			return;
-		}
-	}
-	if(prev)
-		prev->next = target->next;
-	target->next = freeTop;
-	freeTop = target;
+	((MemPrefix*)(addr))->alloced = 0;
+	*GetDataPtr(addr) = MemPreTop;
+	MemPreTop = addr;
+	((MemPrefix*)(addr))->freeSize = ((MemPrefix*)(addr))->allocSize;
 }
 
 void InitMMU()
 {
-	WriteString("Kernel at "); WriteString(itoa(StartOfKernel));
-	WriteString("\nSetting up MMU at "); WriteString(itoa(EndOfKernel)); WriteString("\n");
-	freeMemory = EndOfKernel;
-	usedMemory = freeMemory + NODE_SPACE_SIZE;
-	mainMemoryStart = usedMemory + NODE_SPACE_SIZE;
-
-	usedTop = usedMemory;
-	usedBottom = usedMemory + 1;
-	freeTop = freeMemory;
-	freeBottom = freeMemory + 1;
-	unsigned int i;
-	for(i = 1; i < (NODE_SPACE_SIZE / sizeof(MemoryNode)) - 1; i++)
-	{
-		freeMemory[i].next = freeMemory + 1 + i;
-		usedMemory[i].next = usedMemory + 1 + i;
-		// WriteString("Setting MemoryNode: "); WriteString(itoa(i)); WriteChar('\n');
-	}
-	freeTop->size = (void*)StartOfKernel - mainMemoryStart;
-	// WriteString("freeTop size: "); WriteString(itoa(freeTop->size));
-	freeTop->physicalAddress = mainMemoryStart;
-	WriteString("\nMMU Setup with "); WriteString(itoa(i * 2)); WriteString(" nodes\n");
+	MemPreTop = EndOfKernel;
+	MemPreTop->alloced = 0;
+	register size = 4000000000 - EndOfKernel;
+	MemPreTop->allocSize = size;
+	MemPreTop->freeSize = size;
 }
+
+void ShowMemory()
+{
+	MemPrefix* current = MemPreTop;
+	register data = *GetDataPtr(current);
+	register i = 0;
+	while(data != -1)
+	{
+		WriteString("Mem"); WriteString(itoa(i));
+		WriteString(": "); WriteString(itoa(current->allocSize));
+		WriteString(", "); WriteString(itoa(current->freeSize));
+		WriteString("\n");
+	}
+}
+
