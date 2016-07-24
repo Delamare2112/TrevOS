@@ -1,3 +1,5 @@
+#pragma once
+
 #if defined(__linux__)
 #error "Why you no cross-compile?! You want to hurt?!"
 #endif

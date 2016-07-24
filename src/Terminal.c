@@ -1,5 +1,7 @@
 #include "Terminal.h"
 
+struct Terminal term;
+
 void CreateTerminal()
 {
 	term.row = 0;

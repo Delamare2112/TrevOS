@@ -8,5 +8,5 @@
 #define uint unsigned int
 
 
-//You found me have a cookie
+//You found me. have a cookie
 // Trevors.website/cookie

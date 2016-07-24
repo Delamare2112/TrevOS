@@ -11,7 +11,7 @@ struct Terminal
 	uint16_t* buffer;
 };
 
-struct Terminal term;
+extern struct Terminal term;
 
 void CreateTerminal();
 

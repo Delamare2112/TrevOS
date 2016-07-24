@@ -3,6 +3,9 @@
 void StartKernel()
 {
 	CreateTerminal();
+
+	WriteString("Hello C++ World");
+
 	// InitializeGDT();
 	// InitMMU();
 	
