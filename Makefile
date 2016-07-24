@@ -24,7 +24,8 @@ CXX := $(CXDIR)$(TRIPLET)-g++
 LD := $(CXDIR)$(TRIPLET)-ld
 AS := nasm
 
-CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include 
+# CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include 
+CFLAGS := -ffreestanding -nostdlib -O2 -Wall -Wextra -Werror=return-type -fno-exceptions -fno-rtti -I$(SRCDIR)/include 
 LDFLAGS :=  -L$(LIBDIR) -T $(ETCDIR)/linker.ld -ffreestanding -O2 -nostdlib 
 ASFLAGS := -felf32
 
@@ -46,14 +47,14 @@ debug: release
 
 release: directories clean $(OBJS)
 	@echo -e $(NO_COLOUR)Linking $(LIGHT_GREEN)$(TARGET).elf$(NO_COLOUR)
-	@$(CC) $(LDFLAGS) -o $(TARGET).elf $(OBJS) -lgcc
+	@$(CXX) $(LDFLAGS) -o $(TARGET).elf $(OBJS) -lgcc
 	@echo -e $(NO_COLOUR)Enjoy your shiny new kernel!$(NO_COLOUR)
 
 $(OBJS): $(SRCS) $(ASMS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo -e $(NO_COLOUR)Building $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
-	@$(CC) $(CFLAGS) -o $@ -c $<
+	@$(CXX) $(CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.asm
 	@echo -e $(NO_COLOUR)Assembling $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)

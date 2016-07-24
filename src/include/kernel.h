@@ -12,9 +12,11 @@
 
 #include "config.h"
 #include "Terminal.h"
-#include "Memory.h"
-#include "InterruptHandler.h"
-#include "GDT.h"
+// #include "Memory.h"
+// #include "InterruptHandler.h"
+// #include "GDT.h"
 
 void Panic();
+
+extern "C"
 void StartKernel();
