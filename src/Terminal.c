@@ -1,5 +1,3 @@
-#include "Terminal.h"
-
 void CreateTerminal()
 {
 	term.row = 0;

@@ -15,6 +15,6 @@
 
 void StartKernel()
 {
-	CreateTerminal();
-	WriteString("Hello World!\n");
+	Terminal term = Terminal();
+	term.WriteString("Hello World\n");
 }

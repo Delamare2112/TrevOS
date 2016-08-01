@@ -13,7 +13,7 @@ OUTDIR := bin
 
 TARGET := $(OUTDIR)/$(shell basename `pwd`)
 
-CXDIR := /home/baladash/cxcompiler/bin/
+CXDIR := /home/jackkell/cxcompiler/bin/
 
 TRIPLET := i686-elf
 
@@ -24,11 +24,11 @@ CXX := $(CXDIR)$(TRIPLET)-g++
 LD := $(CXDIR)$(TRIPLET)-ld
 AS := $(CXDIR)$(TRIPLET)-as
 
-CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include 
-LDFLAGS :=  -L$(LIBDIR) -T $(ETCDIR)/linker.ld -ffreestanding -O2 -nostdlib 
-ASFLAGS := 
+CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include
+LDFLAGS :=  -L$(LIBDIR) -T $(ETCDIR)/linker.ld -ffreestanding -O2 -nostdlib
+ASFLAGS :=
 
-CFLAGS += -D'VERSION="$(VERSION)"' 
+CFLAGS += -D'VERSION="$(VERSION)"'
 
 SRCS := $(shell ls $(SRCDIR)/*.c)
 ASMS := $(shell ls $(SRCDIR)/*.s)
