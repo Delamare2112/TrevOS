@@ -1,10 +1,14 @@
 #include "Terminal.h"
 
 Terminal::Terminal() {
-  this.row = 0;
-	this.column = 0;
-	this.color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK);
-	this.buffer = (uint16_t*) VGA_ADDRESS; // VGA text mode buffer output device
+	Terminal(0, 0, NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK), (uint16_t*) VGA_ADDRESS);
+}
+
+Terminal::Terminal(size_t row, size_t column, unit8_t color, unit16_t* buffer) {
+  this.row = row;
+	this.column = column;
+	this.color = color;
+	this.buffer = buffer
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for(size_t x = 0; x < VGA_WIDTH; x++)
 		{
