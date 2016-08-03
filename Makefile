@@ -13,7 +13,7 @@ OUTDIR := bin
 
 TARGET := $(OUTDIR)/$(shell basename `pwd`)
 
-CXDIR := /home/jackkell/cxcompiler/bin/
+CXDIR := /bin/cxcompiler/bin/
 
 TRIPLET := i686-elf
 
@@ -22,18 +22,19 @@ LIBDIR := $(CXDIR)lib/gcc/$(TRIPLET)/4.9.2/
 CC := $(CXDIR)$(TRIPLET)-gcc
 CXX := $(CXDIR)$(TRIPLET)-g++
 LD := $(CXDIR)$(TRIPLET)-ld
-AS := $(CXDIR)$(TRIPLET)-as
+AS := nasm
 
-CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include
+# CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include
+CFLAGS := -ffreestanding -nostdlib -O2 -Wall -Wextra -Werror=return-type -fno-exceptions -fno-rtti -I$(SRCDIR)/include
 LDFLAGS :=  -L$(LIBDIR) -T $(ETCDIR)/linker.ld -ffreestanding -O2 -nostdlib
-ASFLAGS :=
+ASFLAGS := -felf32
 
 CFLAGS += -D'VERSION="$(VERSION)"'
 
 SRCS := $(shell ls $(SRCDIR)/*.c)
-ASMS := $(shell ls $(SRCDIR)/*.s)
+ASMS := $(shell ls $(SRCDIR)/*.asm)
 _OBJS := $(SRCS:.c=.o)
-_OBJS += $(ASMS:.s=.o)
+_OBJS += $(ASMS:.asm=.o)
 OBJS := $(subst $(SRCDIR),$(OBJDIR),$(_OBJS))
 
 all: debug
@@ -46,16 +47,16 @@ debug: release
 
 release: directories clean $(OBJS)
 	@echo -e $(NO_COLOUR)Linking $(LIGHT_GREEN)$(TARGET).elf$(NO_COLOUR)
-	@$(CC) $(LDFLAGS) -o $(TARGET).elf $(OBJS) -lgcc
+	@$(CXX) $(LDFLAGS) -o $(TARGET).elf $(OBJS) -lgcc
 	@echo -e $(NO_COLOUR)Enjoy your shiny new kernel!$(NO_COLOUR)
 
 $(OBJS): $(SRCS) $(ASMS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo -e $(NO_COLOUR)Building $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
-	@$(CC) $(CFLAGS) -o $@ -c $<
+	@$(CXX) $(CFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.s
+$(OBJDIR)/%.o: $(SRCDIR)/%.asm
 	@echo -e $(NO_COLOUR)Assembling $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(AS) $(ASFLAGS) -o $@ $<
 
@@ -73,7 +74,11 @@ directories:
 .PHONY: emu
 emu:
 	@echo -e $(NO_COLOUR)Emulator starting$(NO_COLOUR)
-	@qemu-system-i386 -kernel $(TARGET).elf
+	@qemu-system-i386 -kernel $(TARGET).elf -no-reboot
+
+.PHONY: emuterm
+emuterm:
+	@qemu-system-i386 -curses -kernel $(TARGET).elf -no-reboot
 
 .PHONY: iso
 iso:
@@ -81,4 +86,8 @@ iso:
 
 .PHONY: fullemu
 fullemu:
-	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso
+	@qemu-system-i386 -cdrom $(OUTDIR)/$(shell basename `pwd`).iso -no-reboot
+
+.PHONY: fullemuterm
+fullemuterm:
+	@qemu-system-i386 -curses -cdrom $(OUTDIR)/$(shell basename `pwd`).iso -no-reboot

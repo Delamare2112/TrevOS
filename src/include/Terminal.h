@@ -13,7 +13,8 @@ private:
 
 public:
 	Terminal();
-	Terminal(size_t row, size_t column, unit8_t color, unit16_t* buffer);
+	~Terminal();
+	Terminal(size_t row, size_t column, uint8_t color, uint16_t* buffer);
 
 	void WriteCharAt(char c, uint8_t color, size_t x, size_t y);
 	void WriteChar(char c);
