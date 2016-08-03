@@ -31,9 +31,9 @@ ASFLAGS := -felf32
 
 CFLAGS += -D'VERSION="$(VERSION)"'
 
-SRCS := $(shell ls $(SRCDIR)/*.c)
+SRCS := $(shell ls $(SRCDIR)/*.cpp)
 ASMS := $(shell ls $(SRCDIR)/*.asm)
-_OBJS := $(SRCS:.c=.o)
+_OBJS := $(SRCS:.cpp=.o)
 _OBJS += $(ASMS:.asm=.o)
 OBJS := $(subst $(SRCDIR),$(OBJDIR),$(_OBJS))
 
@@ -52,7 +52,7 @@ release: directories clean $(OBJS)
 
 $(OBJS): $(SRCS) $(ASMS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo -e $(NO_COLOUR)Building $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(CXX) $(CFLAGS) -o $@ -c $<
 
