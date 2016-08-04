@@ -10,7 +10,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "config.h"
 #include "Terminal.h"
 
 extern "C"

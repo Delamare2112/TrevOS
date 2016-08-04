@@ -1,7 +1,6 @@
 // Terminal.h
 #pragma once
 #include "Utility.h"
-#include "config.h"
 
 class Terminal {
 private:
@@ -9,10 +8,14 @@ private:
 	size_t row;
 	size_t column;
 	uint8_t color;
-	uint16_t* buffer;
+
+	static const size_t VGA_WIDTH = 80;
+	static const size_t VGA_HEIGHT = 25;
 
 public:
-	Terminal(size_t row = 0, size_t column = 0, uint8_t color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK), uint16_t* buffer = (uint16_t*) VGA_ADDRESS);
+	static uint16_t* const VGA_ADDRESS;
+	
+	Terminal(size_t row = 0, size_t column = 0, uint8_t color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK));
 
 	void WriteCharAt(char c, uint8_t color, size_t x, size_t y);
 	void WriteChar(char c);

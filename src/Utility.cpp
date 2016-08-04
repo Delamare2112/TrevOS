@@ -1,7 +1,6 @@
 // Utility.c
 
 #include "Utility.h"
-#include "config.h"
 
 // Color Stuffs //
 uint8_t NewColorShceme(enum Color fg, enum Color bg)
@@ -24,14 +23,4 @@ size_t strlen(const char* str)
 	while(str[size] != 0)
 		size++;
 	return size;
-}
-
-extern "C"
-void ForcePrintString(const char* message)
-{
-	size_t length = strlen(message);
-	uint8_t color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK);
-	for(size_t i = 0; i < length; i++) {
-		((uint16_t*)VGA_ADDRESS)[i] = Colorfy(message[i], color);
-	}
 }
