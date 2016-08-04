@@ -6,8 +6,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-enum Color
-{
+enum Color {
 	COLOR_BLACK = 0,
 	COLOR_BLUE = 1,
 	COLOR_GREEN = 2,

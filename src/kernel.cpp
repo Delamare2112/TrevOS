@@ -13,8 +13,7 @@
 #include "Terminal.h"
 
 extern "C"
-void StartKernel()
-{
+void StartKernel() {
 	Terminal term = Terminal();
 	term.WriteString("Hello World\n");
 }

@@ -7,8 +7,7 @@ Terminal::Terminal(size_t row, size_t column, uint8_t color) {
 	this->column = column;
 	this->color = color;
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
-		for(size_t x = 0; x < VGA_WIDTH; x++)
-		{
+		for(size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t i = y * VGA_WIDTH + x;
 			VGA_ADDRESS[i] = Colorfy(' ', this->color);
 		}
@@ -38,8 +37,7 @@ void Terminal::WriteString(const char* message) {
 }
 
 extern "C"
-void ForcePrintString(const char* message)
-{
+void ForcePrintString(const char* message) {
 	size_t length = strlen(message);
 	uint8_t color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK);
 	for(size_t i = 0; i < length; i++) {

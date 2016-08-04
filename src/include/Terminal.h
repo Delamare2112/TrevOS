@@ -14,7 +14,7 @@ private:
 
 public:
 	static uint16_t* const VGA_ADDRESS;
-	
+
 	Terminal(size_t row = 0, size_t column = 0, uint8_t color = NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK));
 
 	void WriteCharAt(char c, uint8_t color, size_t x, size_t y);
