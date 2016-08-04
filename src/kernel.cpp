@@ -3,7 +3,7 @@
 #endif
 
 #if !defined(__i386__)
-#error "you might want to try a ix86-elf compiler"
+#error "you might want to try a i386-elf compiler"
 #endif
 
 #include <stdbool.h> // booleve it or not C doesn't have bools by deafult!
@@ -13,6 +13,7 @@
 #include "config.h"
 #include "Terminal.h"
 
+extern "C"
 void StartKernel()
 {
 	Terminal term = Terminal();

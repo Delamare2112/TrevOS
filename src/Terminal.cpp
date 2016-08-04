@@ -1,11 +1,5 @@
 #include "Terminal.h"
 
-Terminal::Terminal() {
-	Terminal(0, 0, NewColorShceme(COLOR_LIGHT_GREY, COLOR_BLACK), (uint16_t*) VGA_ADDRESS);
-}
-
-Terminal::~Terminal() {}
-
 Terminal::Terminal(size_t row, size_t column, uint8_t color, uint16_t* buffer) {
   this->row = row;
 	this->column = column;
