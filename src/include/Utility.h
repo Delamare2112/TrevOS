@@ -1,5 +1,3 @@
-// Utility.h
-
 #pragma once
 
 #include <stdbool.h> // booleve it or not C doesn't have bools by deafult!

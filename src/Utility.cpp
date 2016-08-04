@@ -1,5 +1,3 @@
-// Utility.c
-
 #include "Utility.h"
 
 // Color Stuffs //

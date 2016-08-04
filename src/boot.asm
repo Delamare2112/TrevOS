@@ -29,6 +29,7 @@ global _start
 _start:
 	extern ForcePrintString
 
+	; print ".text section..."
 	mov eax, strTextSec
 	push eax
 	call ForcePrintString
@@ -37,10 +38,11 @@ _start:
 	; Start journey to protected land!
 	cli					; I shall not be interrupted
 	mov		eax, cr0	; move cr0 to eax :P
-	or		al, 1		
+	or		al, 1
 	mov		cr0, eax
 	sti					; reinable interrupts
 
+	; print "Wearing protection!"
 	mov eax, strProcBeg
 	push eax
 	call ForcePrintString
@@ -48,6 +50,7 @@ _start:
 
 	mov esp, stack_top	; set the stack
 
+	; print "Handing over to C++ code..."
 	mov eax, strKernBeg
 	push eax
 	call ForcePrintString
