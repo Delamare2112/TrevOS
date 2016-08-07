@@ -23,7 +23,7 @@ enum Color {
 	COLOR_WHITE = 15,
 };
 
-uint8_t NewColorShceme(enum Color fg, enum Color bg);
-uint16_t Colorfy(char c, uint8_t color);
+// uint8_t NewColorShceme(enum Color fg, enum Color bg);
+// uint16_t Colorfy(char c, uint8_t color);
 
 size_t strlen(const char* str);
