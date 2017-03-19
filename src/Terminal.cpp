@@ -1,9 +1,7 @@
 #include "Terminal.hpp"
 
-// Terminal Terminal::terminals[2];
-// Terminal* Terminal::currentTerminal = &Terminal::terminals[0];
-Terminal Terminal::instance = Terminal();
-Terminal* Terminal::currentTerminal = &Terminal::instance;
+Terminal Terminal::terminals[2];
+Terminal* Terminal::currentTerminal = &Terminal::terminals[0];
 uint16_t*const Terminal::VGA_Buffer = (uint16_t*) VGA_ADDRESS;
 
 Terminal* Terminal::GetCurrentTerminal() { return currentTerminal; }
@@ -13,7 +11,6 @@ Terminal::Terminal() :
 	column(0),
 	color(Color::NewColorShceme(Color::Color::white, Color::Color::black))
 {
-	ClearScreen();
 	// Clear();
 }
 

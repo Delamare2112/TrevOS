@@ -5,7 +5,7 @@ FLAGS		equ		MBALIGN | MEMINFO	; multiboot flag field
 MAGIC		equ		0x1BADB002 			; magic number to find header
 CHECKSUM	equ		-(MAGIC + FLAGS)	; checksum of above, to prove we are multiboot
 
-extern kmain, start_ctors, end_ctors, start_dtors, end_dtors
+extern start_ctors, end_ctors, start_dtors, end_dtors
 
 ; a header in the Multiboot Standard.
 ; force the header to be in the start of the final program
@@ -24,27 +24,18 @@ stack_top:
 section .text
 global _start
 _start:
-	; Start journey to protected land!
-	; cli					; I shall not be interrupted
-	; mov		eax, cr0	; move cr0 to eax :P
-	; or		al, 1		
-	; mov		cr0, eax
-	; sti					; reinable interrupts
 
 	mov esp, stack_top	; set the stack
 
-	static_ctors_loop:
-   mov ebx, start_ctors
-   jmp .test
+static_ctors_loop:
+	mov ebx, start_ctors
+	jmp .test
 .body:
-   call [ebx]
-   add ebx,4
+	call [ebx]
+	add ebx,4
 .test:
-   cmp ebx, end_ctors
-   jb .body
-
-	; extern _init
-	; call _init
+	cmp ebx, end_ctors
+	jb .body
 
 	extern StartKernel
 	call StartKernel	; lets take a break from asm

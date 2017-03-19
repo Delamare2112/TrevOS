@@ -9,8 +9,7 @@ class Terminal
 {
 private:
 	static uint16_t*const VGA_Buffer;
-	// static Terminal terminals[2]; // TODO: Make dynamic once we have dynamic memory
-	static Terminal instance; // Temp
+	static Terminal terminals[2]; // TODO: Make dynamic once we have dynamic memory
 	static Terminal* currentTerminal;
 	uint16_t buffer[VGA_WIDTH * VGA_HEIGHT];
 	uint8_t id;
