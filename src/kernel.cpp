@@ -1,10 +1,14 @@
-#include "kernel.h"
+#include "kernel.hpp"
+#include "Utility.hpp"
 
 void StartKernel()
 {
-	CreateTerminal();
-
-	WriteString("Hello C++ World");
+	// Terminal& t = *Terminal::GetCurrentTerminal();
+	// t.Terminal();
+	// Terminal::ClearScreen();
+	// ((uint16_t*)VGA_ADDRESS)[0 * VGA_WIDTH + 0] = Color::Colorfy('A', Color::NewColorShceme(Color::Color::white, Color::Color::black));
+	// Terminal::GetCurrentTerminal()->WriteCharAt('A', 0, 0);
+	// Terminal::GetCurrentTerminal()->WriteString("Hello C++ World");
 
 	// InitializeGDT();
 	// InitMMU();
@@ -35,13 +39,14 @@ void StartKernel()
 	// MakeInterruptsWork(); // FIXME: This will never return
 	// PICRemap(0x20, 0x28); // <- Called in MakeItWork until I can make the above funcion behave
 	for(;;) asm("hlt");
-	WriteString("\nHow did I get here?\n");
+	Terminal::GetCurrentTerminal()->WriteString("\nHow did I get here?\n");
+
 }
 
 void Panic()
 {
-	ChangeColor(COLOR_RED, COLOR_BLACK);
-	WriteString("\nOh Shit! It might be a good idea to kill your system...");
+	Terminal::GetCurrentTerminal()->ChangeColor(Color::Color::red, Color::Color::black);
+	Terminal::GetCurrentTerminal()->WriteString("\nOh Shit! It might be a good idea to kill your system...");
 	for(;;)
 		asm("hlt");
 }

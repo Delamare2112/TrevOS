@@ -1,22 +1,24 @@
 // Utility.c
 
-#include "Utility.h"
-#include "Terminal.h"
+#include "Utility.hpp"
+#include "defines.hpp"
+#include "Terminal.hpp"
 // #include "Memory.h"
 
-// Color Stuffs //
-uint8_t NewColorShceme(enum Color fg, enum Color bg)
+namespace Color
 {
-	return fg | bg << 4;
-}
+	uint8_t NewColorShceme(Color fg, Color bg)
+	{
+		return (uint)fg | (uint)bg << 4;
+	}
 
-uint16_t Colorfy(char c, uint8_t color)
-{
-	uint16_t c2 = c;
-	uint16_t color2 = color;
-	return c2 | color2 << 8;
+	uint16_t Colorfy(char c, uint8_t color)
+	{
+		uint16_t c2 = c;
+		uint16_t color2 = color;
+		return c2 | color2 << 8;
+	}
 }
-// End Color Stuffs //
 
 // The fun of living outside of the C standard
 size_t strlen(const char* str)
@@ -42,7 +44,7 @@ char* itoawb(int val, int base)
 		buff[j] = buff[i];
 	buff[++j] = 0;
 	// free(buff);
-	WriteString(""); // Needs to be called or bad things happen for some reason...
+	// WriteString(""); // Needs to be called or bad things happen for some reason...
 	return buff;
 }
 

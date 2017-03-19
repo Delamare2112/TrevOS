@@ -12,8 +12,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "config.h"
-#include "Terminal.h"
+#include "config.hpp"
+#include "Terminal.hpp"
 // #include "Memory.h"
 // #include "InterruptHandler.h"
 // #include "GDT.h"

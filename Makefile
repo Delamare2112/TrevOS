@@ -25,17 +25,25 @@ LD := $(CXDIR)$(TRIPLET)-ld
 AS := nasm
 
 # CFLAGS  := -ffreestanding -nostdlib -std=gnu99 -O2 -Wall -Wextra -Werror=return-type -I$(SRCDIR)/include 
-CFLAGS := -ffreestanding -nostdlib -O2 -Wall -Wextra -Werror=return-type -fno-exceptions -fno-rtti -I$(SRCDIR)/include 
+CFLAGS := -std=c++11 -ffreestanding -nostdlib -O0 -Wall -Wextra -Werror=return-type -fno-exceptions -fno-rtti -I$(SRCDIR)/include 
 LDFLAGS :=  -L$(LIBDIR) -T $(ETCDIR)/linker.ld -ffreestanding -O2 -nostdlib 
 ASFLAGS := -felf32
 
 CFLAGS += -D'VERSION="$(VERSION)"' 
 
-SRCS := $(shell ls $(SRCDIR)/*.c)
+SRCS := $(shell ls $(SRCDIR)/*.cpp)
 ASMS := $(shell ls $(SRCDIR)/*.asm)
-_OBJS := $(SRCS:.c=.o)
+_OBJS := $(SRCS:.cpp=.o)
 _OBJS += $(ASMS:.asm=.o)
 OBJS := $(subst $(SRCDIR),$(OBJDIR),$(_OBJS))
+
+CRTI_OBJ=crti.o
+CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
+CRTN_OBJ=crtn.o
+
+OBJ_LINK_LIST:=$(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(CRTEND_OBJ) $(CRTN_OBJ)
+INTERNAL_OBJS:=$(CRTI_OBJ) $(OBJS) $(CRTN_OBJ)
 
 all: debug
 
@@ -47,12 +55,15 @@ debug: release
 
 release: directories clean $(OBJS)
 	@echo -e $(NO_COLOUR)Linking $(LIGHT_GREEN)$(TARGET).elf$(NO_COLOUR)
-	@$(CXX) $(LDFLAGS) -o $(TARGET).elf $(OBJS) -lgcc
+	@$(AS) $(ASFLAGS) -o crti.o crti.asm
+	@$(AS) $(ASFLAGS) -o crtn.o crtn.asm
+	@echo $(OBJ_LINK_LIST)
+	@$(CXX) $(LDFLAGS) -o $(TARGET).elf $(OBJ_LINK_LIST) -lgcc
 	@echo -e $(NO_COLOUR)Enjoy your shiny new kernel!$(NO_COLOUR)
 
 $(OBJS): $(SRCS) $(ASMS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo -e $(NO_COLOUR)Building $(CYAN)$@$(NO_COLOUR) from $(CYAN)$<$(NO_COLOUR)
 	@$(CXX) $(CFLAGS) -o $@ -c $<
 
