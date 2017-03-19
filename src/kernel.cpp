@@ -8,7 +8,7 @@ void StartKernel()
 	// Terminal::ClearScreen();
 	// ((uint16_t*)VGA_ADDRESS)[0 * VGA_WIDTH + 0] = Color::Colorfy('A', Color::NewColorShceme(Color::Color::white, Color::Color::black));
 	// Terminal::GetCurrentTerminal()->WriteCharAt('A', 0, 0);
-	// Terminal::GetCurrentTerminal()->WriteString("Hello C++ World");
+	Terminal::GetCurrentTerminal()->WriteString("Hello C++ World");
 
 	// InitializeGDT();
 	// InitMMU();

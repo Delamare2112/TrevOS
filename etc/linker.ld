@@ -13,6 +13,16 @@ SECTIONS
 		*(.text)
 	}
 
+	.data ALIGN (0x1000) : {
+		start_ctors = .;
+		*(.ctor*)
+		end_ctors = .;
+		start_dtors = .;
+		*(.dtor*)
+		end_dtors = .;
+		*(.data)
+	}
+
 	/* Read-only data */
 	.rodata BLOCK(4K) : ALIGN(4K)
 	{

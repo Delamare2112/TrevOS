@@ -37,14 +37,6 @@ _OBJS := $(SRCS:.cpp=.o)
 _OBJS += $(ASMS:.asm=.o)
 OBJS := $(subst $(SRCDIR),$(OBJDIR),$(_OBJS))
 
-CRTI_OBJ=crti.o
-CRTBEGIN_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtbegin.o)
-CRTEND_OBJ:=$(shell $(CC) $(CFLAGS) -print-file-name=crtend.o)
-CRTN_OBJ=crtn.o
-
-OBJ_LINK_LIST:=$(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJS) $(CRTEND_OBJ) $(CRTN_OBJ)
-INTERNAL_OBJS:=$(CRTI_OBJ) $(OBJS) $(CRTN_OBJ)
-
 all: debug
 
 verbose: CFLAGS += -v
@@ -55,10 +47,7 @@ debug: release
 
 release: directories clean $(OBJS)
 	@echo -e $(NO_COLOUR)Linking $(LIGHT_GREEN)$(TARGET).elf$(NO_COLOUR)
-	@$(AS) $(ASFLAGS) -o crti.o crti.asm
-	@$(AS) $(ASFLAGS) -o crtn.o crtn.asm
-	@echo $(OBJ_LINK_LIST)
-	@$(CXX) $(LDFLAGS) -o $(TARGET).elf $(OBJ_LINK_LIST) -lgcc
+	@$(CXX) $(LDFLAGS) -o $(TARGET).elf $(OBJS) -lgcc
 	@echo -e $(NO_COLOUR)Enjoy your shiny new kernel!$(NO_COLOUR)
 
 $(OBJS): $(SRCS) $(ASMS)

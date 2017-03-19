@@ -55,8 +55,8 @@ char* itoa(int val)
 
 void strcat(char* one, char* two)
 {
-	int oneLength = strlen(one);
-	for(int i = oneLength; i < oneLength + strlen(two); i++)
+	size_t oneLength = strlen(one);
+	for(size_t i = oneLength; i < oneLength + strlen(two); i++)
 	{
 		one[i] = two[i - oneLength];
 	}
