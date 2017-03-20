@@ -36,7 +36,6 @@ void StartKernel()
 	// PICRemap(0x20, 0x28); // <- Called in MakeItWork until I can make the above funcion behave
 	for(;;) asm("hlt");
 	Terminal::GetCurrentTerminal()->WriteString("\nHow did I get here?\n");
-
 }
 
 void Panic()
