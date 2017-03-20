@@ -34,5 +34,3 @@ namespace Color
 size_t strlen(const char* str);
 char* itoawb(int val, int base);
 char* itoa(int val);
-void strReplaceAt(char* main, char* value, int length, int index);
-void strReplace(char* main, char* key, char* value);

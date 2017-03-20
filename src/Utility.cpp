@@ -61,20 +61,3 @@ void strcat(char* one, char* two)
 		one[i] = two[i - oneLength];
 	}
 }
-
-void strReplaceAt(char* main, char* value, int length, int index)
-{
-	for(int i = 0; i < length; i++)
-		main[index + i] = value[i];
-}
-
-// TODO: Make this work when key and value are not of the same length
-void strReplace(char* main, char* key, char* value)
-{
-	int keyLen = strlen(key);
-	int valueLen = strlen(value);
-	for(int i=0; i < strlen(main); i++)
-		for(int j = 0; j < keyLen && main[i+j] == key[j]; j++)
-			if(j == keyLen)
-				strReplaceAt(main, value, valueLen, i);
-}
